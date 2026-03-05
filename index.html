@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dairy Energy Predictor</title>
+    <style>
+        /* This section styles the calculator to look clean and professional */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .calculator { 
+            background: white; 
+            padding: 30px 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 450px; 
+        }
+        h2 { 
+            color: #2c3e50; 
+            text-align: center; 
+            margin-top: 0; 
+            margin-bottom: 25px;
+        }
+        .input-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #34495e; 
+            font-weight: 600; 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+        }
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: #2980b9; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background 0.3s; 
+            margin-top: 10px;
+        }
+        button:hover { 
+            background-color: #1f618d; 
+        }
+        .result { 
+            margin-top: 25px; 
+            text-align: left; 
+            font-size: 1.2em; 
+            color: #2c3e50; 
+            display: none; 
+            padding: 20px; 
+            border: 2px solid #27ae60; 
+            border-radius: 6px; 
+            background-color: #e9f7ef; 
+        }
+        .result-row {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #c8e6c9;
+        }
+        .result-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            color: #d35400; /* Makes the 7-day total pop with an orange color */
+            font-size: 1.1em;
+        }
+        .equation-note {
+            text-align: center;
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h2>Biogas Production Forecast</h2>
+    
+    <div class="input-group">
+        <label for="temp">Forecasted 7-Day Average Temp (°F)</label>
+        <input type="number" id="temp" placeholder="e.g., 62.5" step="any">
+    </div>
+    
+    <div class="input-group">
+        <label for="herd">Active Herd Count</label>
+        <input type="number" id="herd" placeholder="e.g., 33749">
+    </div>
+    
+    <button onclick="calculateEnergy()">Calculate Production Forecast</button>
+    
+    <div class="result" id="resultArea">
+        <div class="result-row">
+            <strong>Daily Average:</strong> <br>
+            <span id="outputDaily" style="color: #27ae60; font-weight: bold; font-size: 1.2em;"></span> MMBtu / day
+        </div>
+        <div class="result-row">
+            <strong>7-Day Total Expectation:</strong> <br>
+            <span id="outputWeekly" style="font-weight: bold; font-size: 1.3em;"></span> MMBtu
+        </div>
+    </div>
+
+    <div class="equation-note">
+        Powered by OLS Interaction Model
+    </div>
+</div>
+
+<script>
+    function calculateEnergy() {
+        // 1. Grab the numbers the user typed in
+        let temp = parseFloat(document.getElementById('temp').value);
+        let herd = parseFloat(document.getElementById('herd').value);
+        let resultArea = document.getElementById('resultArea');
+        let outputDaily = document.getElementById('outputDaily');
+        let outputWeekly = document.getElementById('outputWeekly');
+
+        // 2. Make sure they actually typed numbers
+        if (isNaN(temp) || isNaN(herd)) {
+            alert("Please enter valid numbers for both Temperature and Herd Count.");
+            return;
+        }
+
+        // 3. The Math (Base + Temp + Herd + Interaction)
+        let base = 82.74;
+        let tempEffect = 2.0316 * temp;
+        let herdEffect = 0.0148 * herd;
+        let interactionEffect = 0.000283 * (temp * herd);
+
+        // 4. Calculate Daily and Weekly
+        let dailyMMBtu = base + tempEffect + herdEffect + interactionEffect;
+        let weeklyMMBtu = dailyMMBtu * 7;
+
+        // 5. Update the screen with the answers, rounded to 2 decimal places
+        outputDaily.textContent = dailyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        outputWeekly.textContent = weeklyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        // Make the result box visible
+        resultArea.style.display = 'block'; 
+    }
+</script>
+
+</body>
+</html>
