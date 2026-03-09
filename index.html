@@ -167,10 +167,10 @@
         let temp = (high + low) / 2;
 
         // 4. Your exact mathematical equation
-        let base = 82.74;
-        let tempEffect = 2.0316 * temp;
-        let herdEffect = 0.0148 * herd;
-        let interactionEffect = 0.000283 * (temp * herd);
+        let base = 243.887662;
+        let tempEffect = 0.5922 * temp;
+        let herdEffect = 0.0085 * herd;
+        let interactionEffect = 0.000341 * (temp * herd);
 
         // 5. Calculate Daily and Weekly MMBtu
         let dailyMMBtu = base + tempEffect + herdEffect + interactionEffect;
@@ -186,3 +186,4 @@
 
 </body>
 </html>
+
