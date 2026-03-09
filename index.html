@@ -30,7 +30,7 @@
         }
         .input-row {
             display: flex;
-            gap: 15px; /* Puts the high and low boxes side-by-side */
+            gap: 15px; 
             margin-bottom: 20px;
         }
         .input-group { 
@@ -142,13 +142,13 @@
     </div>
 
     <div class="equation-note">
-        Powered by OLS Interaction Model
+        Powered by Advanced OLS Polynomial Model
     </div>
 </div>
 
 <script>
     function calculateEnergy() {
-        // 1. Grab the High, Low, and Herd numbers
+        // 1. Grab inputs
         let high = parseFloat(document.getElementById('highTemp').value);
         let low = parseFloat(document.getElementById('lowTemp').value);
         let herd = parseFloat(document.getElementById('herd').value);
@@ -157,26 +157,27 @@
         let outputDaily = document.getElementById('outputDaily');
         let outputWeekly = document.getElementById('outputWeekly');
 
-        // 2. Validate inputs
+        // 2. Validate
         if (isNaN(high) || isNaN(low) || isNaN(herd)) {
             alert("Please enter valid numbers for High Temp, Low Temp, and Herd Count.");
             return;
         }
 
-        // 3. Automatically calculate the average temp
+        // 3. Calculate Simple Average
         let temp = (high + low) / 2;
 
-        // 4. Your exact mathematical equation
-        let base = 243.887662;
-        let tempEffect = 0.5922 * temp;
-        let herdEffect = 0.0085 * herd;
-        let interactionEffect = 0.000341 * (temp * herd);
+        // 4. THE MATH (Paste your 5 Python lines right over these):
+        let base = 0;
+        let tempEffect = 0 * temp;
+        let squaredTempEffect = 0 * (temp * temp);
+        let herdEffect = 0 * herd;
+        let interactionEffect = 0 * (temp * herd);
 
-        // 5. Calculate Daily and Weekly MMBtu
-        let dailyMMBtu = base + tempEffect + herdEffect + interactionEffect;
+        // 5. Calculate Totals
+        let dailyMMBtu = base + tempEffect + squaredTempEffect + herdEffect + interactionEffect;
         let weeklyMMBtu = dailyMMBtu * 7;
 
-        // 6. Output to the screen
+        // 6. Display Results
         outputDaily.textContent = dailyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         outputWeekly.textContent = weeklyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         
@@ -186,4 +187,5 @@
 
 </body>
 </html>
+
 
