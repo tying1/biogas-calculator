@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dairy Energy Predictor</title>
+    <title>Biogas Production Forecast</title>
     <style>
-        /* This section styles the calculator to look clean and professional */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #f4f7f6; 
@@ -29,14 +28,24 @@
             margin-top: 0; 
             margin-bottom: 25px;
         }
+        .input-row {
+            display: flex;
+            gap: 15px; /* Puts the high and low boxes side-by-side */
+            margin-bottom: 20px;
+        }
         .input-group { 
-            margin-bottom: 20px; 
+            flex: 1; 
+            margin-bottom: 20px;
+        }
+        .input-row .input-group {
+            margin-bottom: 0; 
         }
         label { 
             display: block; 
             margin-bottom: 8px; 
             color: #34495e; 
             font-weight: 600; 
+            font-size: 0.95em;
         }
         input { 
             width: 100%; 
@@ -62,7 +71,7 @@
             font-weight: bold;
             cursor: pointer; 
             transition: background 0.3s; 
-            margin-top: 10px;
+            margin-top: 5px;
         }
         button:hover { 
             background-color: #1f618d; 
@@ -87,7 +96,7 @@
             margin-bottom: 0;
             padding-bottom: 0;
             border-bottom: none;
-            color: #d35400; /* Makes the 7-day total pop with an orange color */
+            color: #d35400; 
             font-size: 1.1em;
         }
         .equation-note {
@@ -103,9 +112,15 @@
 <div class="calculator">
     <h2>Biogas Production Forecast</h2>
     
-    <div class="input-group">
-        <label for="temp">Forecasted 7-Day Average Temp (°F)</label>
-        <input type="number" id="temp" placeholder="e.g., 62.5" step="any">
+    <div class="input-row">
+        <div class="input-group">
+            <label for="highTemp">Forecast High (°F)</label>
+            <input type="number" id="highTemp" placeholder="e.g., 75" step="any">
+        </div>
+        <div class="input-group">
+            <label for="lowTemp">Forecast Low (°F)</label>
+            <input type="number" id="lowTemp" placeholder="e.g., 50" step="any">
+        </div>
     </div>
     
     <div class="input-group">
@@ -133,34 +148,38 @@
 
 <script>
     function calculateEnergy() {
-        // 1. Grab the numbers the user typed in
-        let temp = parseFloat(document.getElementById('temp').value);
+        // 1. Grab the High, Low, and Herd numbers
+        let high = parseFloat(document.getElementById('highTemp').value);
+        let low = parseFloat(document.getElementById('lowTemp').value);
         let herd = parseFloat(document.getElementById('herd').value);
+        
         let resultArea = document.getElementById('resultArea');
         let outputDaily = document.getElementById('outputDaily');
         let outputWeekly = document.getElementById('outputWeekly');
 
-        // 2. Make sure they actually typed numbers
-        if (isNaN(temp) || isNaN(herd)) {
-            alert("Please enter valid numbers for both Temperature and Herd Count.");
+        // 2. Validate inputs
+        if (isNaN(high) || isNaN(low) || isNaN(herd)) {
+            alert("Please enter valid numbers for High Temp, Low Temp, and Herd Count.");
             return;
         }
 
-        // 3. The Math (Base + Temp + Herd + Interaction)
+        // 3. Automatically calculate the average temp
+        let temp = (high + low) / 2;
+
+        // 4. Your exact mathematical equation
         let base = 82.74;
         let tempEffect = 2.0316 * temp;
         let herdEffect = 0.0148 * herd;
         let interactionEffect = 0.000283 * (temp * herd);
 
-        // 4. Calculate Daily and Weekly
+        // 5. Calculate Daily and Weekly MMBtu
         let dailyMMBtu = base + tempEffect + herdEffect + interactionEffect;
         let weeklyMMBtu = dailyMMBtu * 7;
 
-        // 5. Update the screen with the answers, rounded to 2 decimal places
+        // 6. Output to the screen
         outputDaily.textContent = dailyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         outputWeekly.textContent = weeklyMMBtu.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         
-        // Make the result box visible
         resultArea.style.display = 'block'; 
     }
 </script>
